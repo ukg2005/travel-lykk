@@ -5,7 +5,7 @@ A comprehensive travel booking web application built with Django that allows use
 ## 🚀 Live Demo
 
 **Deployed Application**: [Coming Soon - Will be deployed to PythonAnywhere]
-**GitHub Repository**: [Your GitHub URL will go here]
+**GitHub Repository**: [https://github.com/ukg2005/travel-lykk](https://github.com/ukg2005/travel-lykk)
 
 ## Features
 
