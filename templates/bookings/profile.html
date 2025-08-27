@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - Travel Lykk{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-user-edit me-2"></i>My Profile
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <!-- User Information -->
+                            <div class="col-md-6">
+                                <h5 class="mb-3">
+                                    <i class="fas fa-user me-2 text-primary"></i>Personal Information
+                                </h5>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ user_form.first_name.id_for_label }}" class="form-label">
+                                        <i class="fas fa-id-card me-2"></i>First Name
+                                    </label>
+                                    {{ user_form.first_name }}
+                                    {% if user_form.first_name.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in user_form.first_name.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ user_form.last_name.id_for_label }}" class="form-label">
+                                        <i class="fas fa-id-card me-2"></i>Last Name
+                                    </label>
+                                    {{ user_form.last_name }}
+                                    {% if user_form.last_name.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in user_form.last_name.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ user_form.email.id_for_label }}" class="form-label">
+                                        <i class="fas fa-envelope me-2"></i>Email Address
+                                    </label>
+                                    {{ user_form.email }}
+                                    {% if user_form.email.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in user_form.email.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        <i class="fas fa-user me-2"></i>Username
+                                    </label>
+                                    <input type="text" class="form-control" value="{{ user.username }}" readonly>
+                                    <small class="form-text text-muted">Username cannot be changed</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Profile Information -->
+                            <div class="col-md-6">
+                                <h5 class="mb-3">
+                                    <i class="fas fa-info-circle me-2 text-primary"></i>Additional Details
+                                </h5>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ profile_form.phone_number.id_for_label }}" class="form-label">
+                                        <i class="fas fa-phone me-2"></i>Phone Number
+                                    </label>
+                                    {{ profile_form.phone_number }}
+                                    {% if profile_form.phone_number.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in profile_form.phone_number.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ profile_form.date_of_birth.id_for_label }}" class="form-label">
+                                        <i class="fas fa-birthday-cake me-2"></i>Date of Birth
+                                    </label>
+                                    {{ profile_form.date_of_birth }}
+                                    {% if profile_form.date_of_birth.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in profile_form.date_of_birth.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ profile_form.address.id_for_label }}" class="form-label">
+                                        <i class="fas fa-map-marker-alt me-2"></i>Address
+                                    </label>
+                                    {{ profile_form.address }}
+                                    {% if profile_form.address.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in profile_form.address.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        <i class="fas fa-calendar me-2"></i>Member Since
+                                    </label>
+                                    <input type="text" class="form-control" value="{{ user.date_joined|date:'M d, Y' }}" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-save me-2"></i>Update Profile
+                                </button>
+                                <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg ms-2">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Home
+                                </a>
+                            </div>
+                            <div>
+                                <a href="{% url 'password_change' %}" class="btn btn-warning">
+                                    <i class="fas fa-key me-2"></i>Change Password
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Quick Stats -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body text-center">
+                            <i class="fas fa-ticket-alt display-4 mb-2"></i>
+                            <h4>{{ user.bookings.count }}</h4>
+                            <p class="mb-0">Total Bookings</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white">
+                        <div class="card-body text-center">
+                            <i class="fas fa-check-circle display-4 mb-2"></i>
+                            <h4>-</h4>
+                            <p class="mb-0">Confirmed Bookings</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-info text-white">
+                        <div class="card-body text-center">
+                            <i class="fas fa-user display-4 mb-2"></i>
+                            <h4>Member</h4>
+                            <p class="mb-0">Since {{ user.date_joined|date:'Y' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

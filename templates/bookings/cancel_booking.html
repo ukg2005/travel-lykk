@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Cancel Booking - {{ booking.booking_id }} - Travel Lykk{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Cancel Booking
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Are you sure you want to cancel this booking?</strong>
+                        This action cannot be undone.
+                    </div>
+                    
+                    <!-- Booking Summary -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-ticket-alt me-2"></i>Booking Summary
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Booking Details</h6>
+                                    <p class="mb-1"><strong>Booking ID:</strong> {{ booking.booking_id }}</p>
+                                    <p class="mb-1"><strong>Travel ID:</strong> {{ booking.travel_option.travel_id }}</p>
+                                    <p class="mb-1"><strong>Type:</strong> {{ booking.travel_option.get_travel_type_display }}</p>
+                                    <p class="mb-1"><strong>Seats:</strong> {{ booking.number_of_seats }}</p>
+                                    <p class="mb-0"><strong>Total Amount:</strong> <span class="text-success">${{ booking.total_price }}</span></p>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <h6>Travel Details</h6>
+                                    <p class="mb-1"><strong>From:</strong> {{ booking.travel_option.source }}</p>
+                                    <p class="mb-1"><strong>To:</strong> {{ booking.travel_option.destination }}</p>
+                                    <p class="mb-1"><strong>Date:</strong> {{ booking.travel_option.departure_date|date:"M d, Y" }}</p>
+                                    <p class="mb-0"><strong>Time:</strong> {{ booking.travel_option.departure_time|time:"g:i A" }}</p>
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            
+                            <div class="row">
+                                <div class="col-12">
+                                    <h6>Passengers</h6>
+                                    <p class="mb-0">{{ booking.passenger_names }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cancellation Policy -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-file-contract me-2"></i>Cancellation Policy
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    You can cancel your booking up to 24 hours before departure
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-info-circle text-info me-2"></i>
+                                    Cancelled bookings will be refunded according to our refund policy
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-clock text-warning me-2"></i>
+                                    Refunds typically take 3-5 business days to process
+                                </li>
+                                <li class="mb-0">
+                                    <i class="fas fa-envelope text-primary me-2"></i>
+                                    You will receive a cancellation confirmation email
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Confirmation Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="alert alert-danger">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="confirmCancel" required>
+                                <label class="form-check-label" for="confirmCancel">
+                                    I understand that this action cannot be undone and I want to cancel this booking.
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'my_bookings' %}" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-arrow-left me-2"></i>Keep Booking
+                            </a>
+                            
+                            <button type="submit" class="btn btn-danger btn-lg" id="cancelButton" disabled>
+                                <i class="fas fa-times me-2"></i>Cancel Booking
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkbox = document.getElementById('confirmCancel');
+        const cancelButton = document.getElementById('cancelButton');
+        
+        checkbox.addEventListener('change', function() {
+            cancelButton.disabled = !this.checked;
+        });
+    });
+</script>
+{% endblock %}

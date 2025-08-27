@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Travel - Travel Lykk{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Travel Option Details -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Travel Details
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="position-relative mb-3">
+                        <span class="badge bg-primary position-absolute top-0 end-0">
+                            {% if travel_option.travel_type == 'flight' %}
+                                <i class="fas fa-plane me-1"></i>
+                            {% elif travel_option.travel_type == 'train' %}
+                                <i class="fas fa-train me-1"></i>
+                            {% else %}
+                                <i class="fas fa-bus me-1"></i>
+                            {% endif %}
+                            {{ travel_option.get_travel_type_display }}
+                        </span>
+                        
+                        <h5 class="text-primary">{{ travel_option.travel_id }}</h5>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-map-marker-alt text-success me-2"></i>
+                                <strong>From:</strong> <span class="ms-2">{{ travel_option.source }}</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                                <strong>To:</strong> <span class="ms-2">{{ travel_option.destination }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-calendar text-primary me-2"></i>
+                                <div>
+                                    <strong>Departure</strong><br>
+                                    <small>{{ travel_option.departure_date|date:"M d, Y" }}</small><br>
+                                    <small>{{ travel_option.departure_time|time:"g:i A" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-clock text-info me-2"></i>
+                                <div>
+                                    <strong>Arrival</strong><br>
+                                    <small>{{ travel_option.arrival_date|date:"M d, Y" }}</small><br>
+                                    <small>{{ travel_option.arrival_time|time:"g:i A" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-chair text-warning me-2"></i>
+                                <div>
+                                    <strong>Available Seats</strong><br>
+                                    <span class="{% if travel_option.available_seats < 5 %}text-danger{% else %}text-success{% endif %}">
+                                        {{ travel_option.available_seats }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-dollar-sign text-success me-2"></i>
+                                <div>
+                                    <strong>Price per Seat</strong><br>
+                                    <span class="h5 text-success mb-0">${{ travel_option.price }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if travel_option.available_seats < 5 and travel_option.available_seats > 0 %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Only {{ travel_option.available_seats }} seat{{ travel_option.available_seats|pluralize }} left!
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Booking Form -->
+        <div class="col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-ticket-alt me-2"></i>Booking Information
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="bookingForm">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.number_of_seats.id_for_label }}" class="form-label">
+                                <i class="fas fa-users me-2"></i>Number of Seats
+                            </label>
+                            {{ form.number_of_seats }}
+                            {% if form.number_of_seats.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.number_of_seats.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                Maximum {{ travel_option.available_seats }} seat{{ travel_option.available_seats|pluralize }} available
+                            </small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.passenger_names.id_for_label }}" class="form-label">
+                                <i class="fas fa-user-friends me-2"></i>Passenger Names
+                            </label>
+                            {{ form.passenger_names }}
+                            {% if form.passenger_names.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.passenger_names.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                Enter full names separated by commas
+                            </small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.contact_email.id_for_label }}" class="form-label">
+                                <i class="fas fa-envelope me-2"></i>Contact Email
+                            </label>
+                            {{ form.contact_email }}
+                            {% if form.contact_email.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.contact_email.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.contact_phone.id_for_label }}" class="form-label">
+                                <i class="fas fa-phone me-2"></i>Contact Phone
+                            </label>
+                            {{ form.contact_phone }}
+                            {% if form.contact_phone.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.contact_phone.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Price Summary -->
+                        <div class="card bg-light mb-4">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="fas fa-calculator me-2"></i>Price Summary
+                                </h6>
+                                <div class="d-flex justify-content-between">
+                                    <span>Price per seat:</span>
+                                    <span>${{ travel_option.price }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Number of seats:</span>
+                                    <span id="seatCount">1</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between h5">
+                                    <strong>Total:</strong>
+                                    <strong class="text-success" id="totalPrice">${{ travel_option.price }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-credit-card me-2"></i>Confirm Booking
+                            </button>
+                            <a href="{% url 'travel_options' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Search
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const seatInput = document.getElementById('{{ form.number_of_seats.id_for_label }}');
+        const seatCountDisplay = document.getElementById('seatCount');
+        const totalPriceDisplay = document.getElementById('totalPrice');
+        const pricePerSeat = {{ travel_option.price }};
+        
+        function updatePrice() {
+            const seats = parseInt(seatInput.value) || 1;
+            const total = seats * pricePerSeat;
+            
+            seatCountDisplay.textContent = seats;
+            totalPriceDisplay.textContent = '$' + total.toFixed(2);
+        }
+        
+        seatInput.addEventListener('input', updatePrice);
+        
+        // Update passenger names placeholder based on number of seats
+        const passengerNamesInput = document.getElementById('{{ form.passenger_names.id_for_label }}');
+        
+        function updatePassengerPlaceholder() {
+            const seats = parseInt(seatInput.value) || 1;
+            let placeholder = '';
+            for (let i = 1; i <= seats; i++) {
+                if (i > 1) placeholder += ', ';
+                placeholder += `Passenger ${i} Name`;
+            }
+            passengerNamesInput.placeholder = placeholder;
+        }
+        
+        seatInput.addEventListener('input', updatePassengerPlaceholder);
+        updatePassengerPlaceholder(); // Initial call
+    });
+</script>
+{% endblock %}

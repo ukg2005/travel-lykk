@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Travel Options - Travel Lykk{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Search Form -->
+    <div class="card shadow mb-5">
+        <div class="card-body">
+            <h3 class="card-title text-center mb-4">
+                <i class="fas fa-search me-2"></i>Search Travel Options
+            </h3>
+            
+            <form method="get">
+                <div class="row g-3">
+                    <div class="col-md-6 col-lg-3">
+                        {{ form.travel_type.label_tag }}
+                        {{ form.travel_type }}
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        {{ form.source.label_tag }}
+                        {{ form.source }}
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        {{ form.destination.label_tag }}
+                        {{ form.destination }}
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        {{ form.departure_date.label_tag }}
+                        {{ form.departure_date }}
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-search me-2"></i>Search
+                    </button>
+                    <a href="{% url 'travel_options' %}" class="btn btn-outline-secondary btn-lg ms-2">
+                        <i class="fas fa-undo me-2"></i>Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results -->
+    {% if travel_options %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4>
+            <i class="fas fa-list me-2"></i>Available Travel Options
+            <span class="badge bg-primary">{{ page_obj.paginator.count }} result{{ page_obj.paginator.count|pluralize }}</span>
+        </h4>
+    </div>
+    
+    <div class="row">
+        {% for travel in travel_options %}
+        <div class="col-lg-6 col-xl-4 mb-4">
+            <div class="card travel-card h-100">
+                <div class="card-body position-relative">
+                    <!-- Travel Type Badge -->
+                    <span class="badge bg-primary travel-type-badge">
+                        {% if travel.travel_type == 'flight' %}
+                            <i class="fas fa-plane me-1"></i>
+                        {% elif travel.travel_type == 'train' %}
+                            <i class="fas fa-train me-1"></i>
+                        {% else %}
+                            <i class="fas fa-bus me-1"></i>
+                        {% endif %}
+                        {{ travel.get_travel_type_display }}
+                    </span>
+                    
+                    <h5 class="card-title">{{ travel.travel_id }}</h5>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-map-marker-alt text-success me-2"></i>
+                            <strong>From:</strong> {{ travel.source }}
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                            <strong>To:</strong> {{ travel.destination }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-calendar text-primary me-2"></i>
+                            <strong>Departure:</strong> {{ travel.departure_date|date:"M d, Y" }}
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-clock text-info me-2"></i>
+                            <strong>Time:</strong> {{ travel.departure_time|time:"g:i A" }} - {{ travel.arrival_time|time:"g:i A" }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-chair text-warning me-2"></i>
+                            <strong>Available Seats:</strong> 
+                            <span class="{% if travel.available_seats < 5 %}text-danger{% else %}text-success{% endif %}">
+                                {{ travel.available_seats }}
+                            </span>
+                        </div>
+                        {% if travel.available_seats < 5 and travel.available_seats > 0 %}
+                            <small class="text-warning">
+                                <i class="fas fa-exclamation-triangle me-1"></i>Only {{ travel.available_seats }} seat{{ travel.available_seats|pluralize }} left!
+                            </small>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="price-tag">${{ travel.price }}</div>
+                        {% if user.is_authenticated %}
+                            {% if travel.available_seats > 0 %}
+                                <a href="{% url 'book_travel' travel.id %}" class="btn btn-success">
+                                    <i class="fas fa-ticket-alt me-1"></i>Book Now
+                                </a>
+                            {% else %}
+                                <button class="btn btn-secondary" disabled>
+                                    <i class="fas fa-times me-1"></i>Sold Out
+                                </button>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'login' %}" class="btn btn-outline-primary">
+                                <i class="fas fa-sign-in-alt me-1"></i>Login to Book
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.travel_type %}&travel_type={{ request.GET.travel_type }}{% endif %}{% if request.GET.source %}&source={{ request.GET.source }}{% endif %}{% if request.GET.destination %}&destination={{ request.GET.destination }}{% endif %}{% if request.GET.departure_date %}&departure_date={{ request.GET.departure_date }}{% endif %}">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </a>
+                </li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% if request.GET.travel_type %}&travel_type={{ request.GET.travel_type }}{% endif %}{% if request.GET.source %}&source={{ request.GET.source }}{% endif %}{% if request.GET.destination %}&destination={{ request.GET.destination }}{% endif %}{% if request.GET.departure_date %}&departure_date={{ request.GET.departure_date }}{% endif %}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.travel_type %}&travel_type={{ request.GET.travel_type }}{% endif %}{% if request.GET.source %}&source={{ request.GET.source }}{% endif %}{% if request.GET.destination %}&destination={{ request.GET.destination }}{% endif %}{% if request.GET.departure_date %}&departure_date={{ request.GET.departure_date }}{% endif %}">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    
+    {% else %}
+    <!-- No Results -->
+    <div class="text-center py-5">
+        <i class="fas fa-search display-1 text-muted mb-4"></i>
+        <h3>No travel options found</h3>
+        {% if request.GET %}
+            <p class="text-muted mb-4">Try adjusting your search criteria or clear the filters to see all available options.</p>
+        {% else %}
+            <p class="text-muted mb-4">Use the search form above to find travel options that match your preferences.</p>
+        {% endif %}
+        <a href="{% url 'travel_options' %}" class="btn btn-primary">
+            <i class="fas fa-undo me-2"></i>Clear Search
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
