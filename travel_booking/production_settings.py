@@ -27,9 +27,11 @@ SECURE_HSTS_PRELOAD = True
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', SECRET_KEY)
 
 # Database configuration (can be overridden with environment variables)
-if os.environ.get('DATABASE_URL'):
-    import dj_database_url
-    DATABASES['default'] = dj_database_url.parse(os.environ.get('DATABASE_URL'))
+# For basic deployment, we'll use SQLite. For advanced deployments with PostgreSQL/MySQL,
+# you can install dj-database-url and uncomment the lines below
+# if os.environ.get('DATABASE_URL'):
+#     import dj_database_url
+#     DATABASES['default'] = dj_database_url.parse(os.environ.get('DATABASE_URL'))
 
 # Static files configuration for production
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
