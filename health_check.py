@@ -88,7 +88,7 @@ def test_template_rendering():
     
     try:
         response = client.get(reverse('home'))
-        if 'Travel Lykk' in response.content.decode():
+        if 'ZipGo' in response.content.decode():
             print("  ✅ Templates rendering correctly")
             return True
         else:

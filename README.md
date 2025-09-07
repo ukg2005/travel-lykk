@@ -1,6 +1,6 @@
-# Travel Lykk
+# ZipGo
 
-Django travel booking application.
+Django travel booking application - your personal travel companion.
 
 ## Setup
 
