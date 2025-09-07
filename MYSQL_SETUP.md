@@ -1,4 +1,4 @@
-# MySQL Configuration Guide for Travel Lykk
+# MySQL Configuration Guide for ZipGo
 
 ## For Windows (using XAMPP or standalone MySQL):
 

@@ -1,4 +1,4 @@
-# Deployment Guide for Travel Lykk
+# Deployment Guide for ZipGo
 
 ## PythonAnywhere Deployment
 
@@ -18,7 +18,7 @@ git push origin main
 2. Go to Files tab and upload your project
 3. Or clone from GitHub:
    ```bash
-   git clone https://github.com/yourusername/travel-lykk.git
+   git clone https://github.com/yourusername/zipgo.git
    ```
 
 ### 3. Set up Virtual Environment
@@ -46,14 +46,14 @@ python manage.py collectstatic
 2. Click "Add a new web app"
 3. Choose Manual Configuration
 4. Choose Python 3.11
-5. Set source code directory: `/home/yourusername/travel-lykk`
-6. Set working directory: `/home/yourusername/travel-lykk`
+5. Set source code directory: `/home/yourusername/zipgo`
+6. Set working directory: `/home/yourusername/zipgo`
 7. Edit WSGI file:
    ```python
    import os
    import sys
    
-   path = '/home/yourusername/travel-lykk'
+   path = '/home/yourusername/zipgo'
    if path not in sys.path:
        sys.path.insert(0, path)
    
@@ -65,8 +65,8 @@ python manage.py collectstatic
 
 ### 7. Static Files
 1. Go to Web tab → Static files
-2. Add: URL: `/static/` Directory: `/home/yourusername/travel-lykk/staticfiles/`
-3. Add: URL: `/media/` Directory: `/home/yourusername/travel-lykk/media/`
+2. Add: URL: `/static/` Directory: `/home/yourusername/zipgo/staticfiles/`
+3. Add: URL: `/media/` Directory: `/home/yourusername/zipgo/media/`
 
 ### 8. Update Settings for Production
 ```python
@@ -75,7 +75,7 @@ DEBUG = False
 ALLOWED_HOSTS = ['yourusername.pythonanywhere.com']
 
 # Static files
-STATIC_ROOT = '/home/yourusername/travel-lykk/staticfiles'
+STATIC_ROOT = '/home/yourusername/zipgo/staticfiles'
 ```
 
 ### 9. Reload and Test
@@ -99,8 +99,8 @@ sudo apt install python3-pip python3-venv nginx mysql-server
 
 ### 3. Set up Application
 ```bash
-git clone https://github.com/yourusername/travel-lykk.git
-cd travel-lykk
+git clone https://github.com/yourusername/zipgo.git
+cd zipgo
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -137,7 +137,7 @@ DATABASES = {
     }
 }
 
-STATIC_ROOT = '/home/ubuntu/travel-lykk/staticfiles'
+STATIC_ROOT = '/home/ubuntu/zipgo/staticfiles'
 ```
 
 ### 6. Run Migrations and Collect Static
@@ -158,15 +158,15 @@ After=network.target
 [Service]
 User=ubuntu
 Group=www-data
-WorkingDirectory=/home/ubuntu/travel-lykk
-ExecStart=/home/ubuntu/travel-lykk/venv/bin/gunicorn --access-logfile - --workers 3 --bind unix:/home/ubuntu/travel-lykk/travel_booking.sock travel_booking.wsgi:application
+WorkingDirectory=/home/ubuntu/zipgo
+ExecStart=/home/ubuntu/zipgo/venv/bin/gunicorn --access-logfile - --workers 3 --bind unix:/home/ubuntu/zipgo/travel_booking.sock travel_booking.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
 ```
 
 ### 8. Configure Nginx
-Create `/etc/nginx/sites-available/travel-lykk`:
+Create `/etc/nginx/sites-available/zipgo`:
 ```nginx
 server {
     listen 80;
@@ -174,22 +174,22 @@ server {
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
-        root /home/ubuntu/travel-lykk;
+        root /home/ubuntu/zipgo;
     }
     location /media/ {
-        root /home/ubuntu/travel-lykk;
+        root /home/ubuntu/zipgo;
     }
 
     location / {
         include proxy_params;
-        proxy_pass http://unix:/home/ubuntu/travel-lykk/travel_booking.sock;
+        proxy_pass http://unix:/home/ubuntu/zipgo/travel_booking.sock;
     }
 }
 ```
 
 Enable site:
 ```bash
-sudo ln -s /etc/nginx/sites-available/travel-lykk /etc/nginx/sites-enabled
+sudo ln -s /etc/nginx/sites-available/zipgo /etc/nginx/sites-enabled
 sudo nginx -t
 sudo systemctl restart nginx
 ```

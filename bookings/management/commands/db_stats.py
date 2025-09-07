@@ -19,7 +19,7 @@ class Command(BaseCommand):
         cancelled_bookings = Booking.objects.filter(status='cancelled').count()
         pending_bookings = Booking.objects.filter(status='pending').count()
         
-        self.stdout.write(self.style.SUCCESS('\n=== TRAVEL LYKK DATABASE STATISTICS ===\n'))
+        self.stdout.write(self.style.SUCCESS('\n=== ZIPGO DATABASE STATISTICS ===\n'))
         
         self.stdout.write(f'👥 Total Users: {users_count}')
         self.stdout.write(f'✈️  Total Travel Options: {travel_options_count}')
