@@ -49,8 +49,13 @@
                                 </div>
                             </div>
                             <div class="text-center mt-4">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="fas fa-search me-2"></i>Search Travels
+                                <button type="submit" class="btn btn-primary btn-lg" id="searchBtn">
+                                    <span class="btn-text">
+                                        <i class="fas fa-search me-2"></i>Search Travels
+                                    </span>
+                                    <span class="btn-loading d-none">
+                                        <i class="fas fa-spinner fa-spin me-2"></i>Searching...
+                                    </span>
                                 </button>
                                 <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg ms-2">
                                     <i class="fas fa-undo me-2"></i>Clear
@@ -222,4 +227,45 @@
     </div>
 </section>
 {% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Enhanced search form functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchForm = document.querySelector('form[method="get"]');
+        const searchBtn = document.getElementById('searchBtn');
+        const btnText = searchBtn.querySelector('.btn-text');
+        const btnLoading = searchBtn.querySelector('.btn-loading');
+        
+        if (searchForm && searchBtn) {
+            searchForm.addEventListener('submit', function() {
+                // Show loading state
+                btnText.classList.add('d-none');
+                btnLoading.classList.remove('d-none');
+                searchBtn.disabled = true;
+                
+                // Add a small delay to show the loading state
+                setTimeout(function() {
+                    // The form will submit naturally after this
+                }, 100);
+            });
+        }
+        
+        // Enhanced form validation feedback
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = '#007bff';
+                this.style.boxShadow = '0 0 0 0.2rem rgba(0, 123, 255, 0.25)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.borderColor = '';
+                this.style.boxShadow = '';
+            });
+        });
+    });
+</script>
 {% endblock %}
