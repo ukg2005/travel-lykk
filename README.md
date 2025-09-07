@@ -1,12 +1,12 @@
-# Travel Lykk
+# ZipGo
 
 Django travel booking application.
 
 ## Setup
 
 ```bash
-git clone https://github.com/ukg2005/travel-lykk.git
-cd travel-lykk
+git clone https://github.com/ukg2005/zipgo.git
+cd zipgo
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py create_sample_data

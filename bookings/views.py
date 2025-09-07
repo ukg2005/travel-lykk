@@ -49,7 +49,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, 'Registration successful! Welcome to Travel Lykk!')
+            messages.success(request, 'Registration successful! Welcome to ZipGo!')
             return redirect('home')
     else:
         form = CustomUserCreationForm()
