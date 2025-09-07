@@ -163,7 +163,8 @@
             input.classList.add('form-control');
             
             // Add validation styling
-            if (input.closest('.mb-3, .mb-4').querySelector('.text-danger')) {
+            const parent = input.closest('.mb-3, .mb-4');
+            if (parent && parent.querySelector('.text-danger')) {
                 input.classList.add('is-invalid');
             }
         });
