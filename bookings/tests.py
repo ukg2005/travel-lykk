@@ -206,7 +206,7 @@ class ViewsTest(TestCase):
     def test_home_view(self):
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Travel Lykk')
+        self.assertContains(response, 'ZipGo')
     
     def test_travel_options_view(self):
         response = self.client.get(reverse('travel_options'))
